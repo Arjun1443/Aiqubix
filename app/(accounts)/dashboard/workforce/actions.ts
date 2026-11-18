@@ -25,6 +25,7 @@ function isDate(value: string) {
 function refresh(message: string) {
   revalidatePath(managerRoute);
   revalidatePath(staffRoute);
+  revalidatePath("/dashboard/trainer");
   return { message };
 }
 

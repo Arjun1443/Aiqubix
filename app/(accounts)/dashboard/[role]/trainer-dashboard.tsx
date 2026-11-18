@@ -8,6 +8,7 @@ import { saveProfile, signOut } from "../../actions";
 import { AccountForm, Field } from "../../account-form";
 import { addLearner, createBatch, saveTrainerRecord } from "./trainer-actions";
 import { TrainerIntakePanel } from "./trainer-intake-panel";
+import { WorkAppraisals, WorkAttendance, WorkLeave } from "../workforce/workforce-sections";
 import { WorkspaceSummary } from "./workspace";
 
 type Query = { section?: string; batch?: string; edit?: string; intake?: string };
@@ -35,9 +36,10 @@ const descriptions: Record<ActivityKind, string> = {
 export async function TrainerDashboard({ user, query }: { user: Account; query: Query }) {
   const selected = sections.find(([key]) => key === query.section) ?? sections[0];
   const [section, title] = selected;
+  const isWorkSection = section.startsWith("work-");
   const [batches, courses] = await Promise.all([
-    trainerBatches().find({ trainer: user._id }).sort({ name: 1, _id: 1 }).toArray(),
-    getCourses(),
+    isWorkSection ? [] : trainerBatches().find({ trainer: user._id }).sort({ name: 1, _id: 1 }).toArray(),
+    isWorkSection ? [] : getCourses(),
   ]);
   const batch = batches.find((item) => item._id === query.batch) ?? batches[0];
   const scope = batch ? { trainer: user._id, batch: batch._id } : null;
@@ -63,7 +65,7 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
           <p className="academy-description">{user.name}{batch && <> · {batch.name} · {batch.course}{batch._id.startsWith("AIQ_B_") && <> · {batch._id}</>}</>}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link className="academy-button academy-button-secondary" href="/dashboard/workforce">My work &amp; leave</Link>
+          <Link className="academy-button academy-button-secondary" href={link("work-attendance")}>My work &amp; leave</Link>
           <form action={signOut}><button className="academy-button academy-button-secondary"><LogOut size={16} aria-hidden="true" /> Sign out</button></form>
         </div>
       </header>
@@ -160,6 +162,9 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
           {!batch && ((kind && kind !== "forms") || section === "users" || section === "reports") && <p className="academy-panel academy-panel-body">
             Create a batch to use this section. <Link className="trainer-link" href={link("batches")}>Open Batch Details</Link>
           </p>}
+          {section === "work-attendance" && <WorkAttendance employee={user._id} />}
+          {section === "work-leave" && <WorkLeave employee={user._id} />}
+          {section === "work-appraisals" && <WorkAppraisals employee={user._id} />}
           {section === "profile" && <section className="academy-panel academy-panel-body trainer-section">
             <h2>My profile</h2>
             <p className="academy-email"><span>Account email</span>{user._id}</p>
