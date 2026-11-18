@@ -152,3 +152,25 @@ courses.
 After deployment, check `/api/health` for
 `{"status":"ok","database":"ok"}` and `/api/courses` for the database-backed
 catalogue. Both endpoints return HTTP 503 when their MongoDB operation fails.
+
+### Academy accounts
+
+Students register at `/register`. Staff open `/activate` with a one-time code
+created by an admin. The dashboard routes use the role stored in MongoDB and
+each profile can edit only its own details.
+
+Create the first admin from a trusted machine with access to the same MongoDB
+database as the deployment. In a private, git-ignored env file, set
+`MONGODB_URI`, `MONGODB_DATABASE` if different from the default,
+`AIQUBIX_ADMIN_EMAIL`, and `AIQUBIX_ADMIN_PASSWORD`. Optionally set
+`AIQUBIX_ADMIN_NAME`. Run the following once and remove the bootstrap password
+from the env file afterwards. Use an email that has no account yet.
+
+```sh
+node --env-file=.env.local scripts/create-admin.mjs
+```
+
+From the admin dashboard, create an invite for a trainer or senior manager.
+Share the code privately. It expires after 24 hours and staff choose their own
+password at `/activate`. MongoDB access for the application must allow reads,
+writes and index creation in the academy database.
