@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { AcademyLogo } from "@/components/academy-logo";
 import { useEffect, useMemo, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -264,23 +265,8 @@ export default function AcademyHome({ courses }: { courses: Course[] }) {
   return (
     <main className="site-shell min-h-screen overflow-x-hidden text-slate-100">
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#06101ddd]/90 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4 sm:px-8">
-          <a
-            href="#workspace"
-            className="flex items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
-          >
-            <span className="brand-logo-mark grid h-10 w-10 place-items-center rounded-xl font-black text-white">
-              A
-            </span>
-            <span>
-              <span className="block text-sm font-extrabold tracking-[0.14em] text-white">
-                AIQUBIX
-              </span>
-              <span className="block text-[10px] font-medium tracking-[0.18em] text-cyan-200">
-                ACADEMY
-              </span>
-            </span>
-          </a>
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-5 py-3 sm:gap-4 sm:px-8">
+          <AcademyLogo />
 
           <nav aria-label="Main navigation" className="hidden gap-6 text-sm text-slate-300 md:flex">
             <a className="transition hover:text-cyan-200" href="#workspace">Workspace</a>
