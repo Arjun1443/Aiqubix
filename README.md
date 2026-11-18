@@ -124,3 +124,31 @@ The portable build runs Vinext directly without a host `timeout` command. The ma
 
 - [vinext Documentation](https://github.com/cloudflare/vinext)
 - [Drizzle D1 Guide](https://orm.drizzle.team/docs/get-started/d1-new)
+
+## AIQUBIX backend on Vercel
+
+Use the Next.js framework with the repository root as the Vercel project root.
+Set `MONGODB_URI` to the hosted MongoDB connection string in the Vercel project's
+server-side environment variables and redeploy. `MONGODB_DATABASE` is optional
+and defaults to `aiqubix`. The database user needs read access to the `courses`
+collection and the database network configuration must allow the deployment to
+connect.
+
+For local development, use the same variables in `.env.local`. From the repo
+root, install dependencies, optionally seed the bundled catalogue using a
+MongoDB user with write access, and start Next.js using the Node.js runtime.
+
+```sh
+pnpm install --frozen-lockfile
+node --env-file=.env.local scripts/seed-courses.mjs
+pnpm exec next dev
+```
+
+The seed inserts missing courses by title and preserves existing records. The
+production homepage uses the bundled catalogue when MongoDB is unconfigured
+or unavailable. A reachable database with an empty catalogue returns zero
+courses.
+
+After deployment, check `/api/health` for
+`{"status":"ok","database":"ok"}` and `/api/courses` for the database-backed
+catalogue. Both endpoints return HTTP 503 when their MongoDB operation fails.
