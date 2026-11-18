@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { courseLessonPath } from "@/lib/course-paths";
 import { BookOpen, ChevronRight, LogOut } from "lucide-react";
 import { accounts, profileFields, type Account } from "@/lib/academy-accounts";
 import { getCourses } from "@/lib/academy-courses";
@@ -117,7 +118,7 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
             <h2>Teaching catalogue</h2>
             <ul className="academy-course-list">{courses.map((course) => (
               <li key={course.title}><BookOpen size={18} aria-hidden="true" />
-                <div><p>{course.title}</p><small>{course.category} · {course.level} · {course.duration} · {course.lessons} lessons</small><small>{course.text}</small></div>
+                <div><p>{courseLessonPath(course.title) ? <Link className="trainer-link" href={courseLessonPath(course.title)!}>{course.title}</Link> : course.title}</p><small>{course.category} · {course.level} · {course.duration} · {course.lessons} lessons</small><small>{course.text}</small></div>
               </li>
             ))}</ul>
             {!courses.length && <p className="academy-empty">No courses are available in the catalogue.</p>}

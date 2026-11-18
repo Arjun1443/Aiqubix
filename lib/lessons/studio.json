@@ -1,0 +1,182 @@
+[
+  {
+    "title": "Find a real project question",
+    "explanation": "Start with a specific problem a person can recognise. Identify who experiences it, what they do today, and what would improve. Use a question that you can demonstrate with limited time and data.",
+    "example": "A club coordinator spends 25 minutes sorting sign-ups each week. Build a simple tool that groups entries by activity. If it takes 10 minutes with the tool, the observed saving is 15 minutes.",
+    "steps": [
+      "Observe a problem",
+      "Name the user",
+      "Measure a baseline"
+    ],
+    "question": "Why include who uses the tool?",
+    "answer": "It helps you choose the right features and measure a result that matters."
+  },
+  {
+    "title": "Set a measurable goal",
+    "explanation": "A goal should describe what will change and how you will measure it. Identify a baseline, a target, and a time window. Use the same measurement method before and after.",
+    "example": "The baseline is eight correct event labels out of ten. Set a target of nine out of ten on a separate set of similar notices. The target is 90%, a 10-percentage-point increase over 80%.",
+    "steps": [
+      "Measure current result",
+      "Set target",
+      "Prepare a check"
+    ],
+    "question": "Why use a separate test set?",
+    "answer": "It shows whether the work improves on new cases."
+  },
+  {
+    "title": "Define scope and requirements",
+    "explanation": "List the user’s essential actions. A minimum viable version solves the central problem with the smallest useful features. Write a clear pass condition for each essential action.",
+    "example": "The first release accepts a CSV, validates required columns, and shows club totals. Exporting charts is added later. The CSV check passes when all required columns exist and each row can be parsed.",
+    "steps": [
+      "List essential actions",
+      "Set boundaries",
+      "Define pass conditions"
+    ],
+    "question": "Is a dark-mode setting essential to this first release?",
+    "answer": "Usually no. The import and summary solve the main task."
+  },
+  {
+    "title": "Plan work in milestones",
+    "explanation": "Break the project into small checkpoints with observable results. Dependencies matter: importing data must work before summarising it. Keep time for testing and unexpected revisions.",
+    "example": "With six hours, use one for design, two for import and validation, two for the report, and one for testing. Saving the test hour protects the delivery if the build goes smoothly.",
+    "steps": [
+      "Break work into tasks",
+      "Order dependencies",
+      "Reserve test time"
+    ],
+    "question": "Which task comes before producing a report from the imported data?",
+    "answer": "Importing and validating the data."
+  },
+  {
+    "title": "Design the user flow",
+    "explanation": "A user flow shows the steps a person follows. Include what they see if a step fails. Make the next action clear at each point.",
+    "example": "For a results viewer, start at Select File, then Validate, then View Results. If validation fails, show the missing column and let the user choose another file.",
+    "steps": [
+      "Choose input",
+      "Validate",
+      "Show result or guidance"
+    ],
+    "question": "What should the screen show if student_id is missing?",
+    "answer": "Name the missing column and give a way to upload a corrected file."
+  },
+  {
+    "title": "Collect and document data",
+    "explanation": "Know where your records came from, what each field means, and what you are permitted to use. A data dictionary lists field names, types, meanings, and example values.",
+    "example": "A project uses 60 fictional club sign-ups with fields club_id and grade. Specify that grade is a number 6 through 12. Reject or flag values such as 16.",
+    "steps": [
+      "Record data source",
+      "Define fields",
+      "Validate ranges"
+    ],
+    "question": "Why record that examples are fictional?",
+    "answer": "It avoids claiming that fabricated data came from real students."
+  },
+  {
+    "title": "Build a baseline",
+    "explanation": "A baseline is a simple method that gives you a result to beat. It can be a manual process, a common default, or a simple model. Compare it on the same cases as your project.",
+    "example": "If 7 of 10 notices are labelled General, always predicting General gets 70% accuracy. A classifier scoring 60% is below that baseline, even if its algorithm looks more advanced.",
+    "steps": [
+      "Choose simple rule",
+      "Test same cases",
+      "Compare improvement"
+    ],
+    "question": "What is the baseline score if 12 of 20 examples have the most common label?",
+    "answer": "12 ÷ 20 = 60%."
+  },
+  {
+    "title": "Prototype an interface",
+    "explanation": "A prototype shows what the user will see and do. It can begin as a paper sketch or simple page. Ask a user to try one key task and observe where they hesitate.",
+    "example": "Two users take 90 and 110 seconds to find a report. The average is 100 seconds. Move the report link somewhere clearer and repeat on comparable tasks.",
+    "steps": [
+      "Sketch one task",
+      "Observe real use",
+      "Revise layout"
+    ],
+    "question": "If users search under Courses for a report, what could the navigation offer?",
+    "answer": "A clearer Reports entry or a course-level link to the report."
+  },
+  {
+    "title": "Test normal cases and edge cases",
+    "explanation": "A normal test checks expected inputs. An edge case tests a boundary or unusual situation. Add clear expected results before running tests so you can tell whether the application behaved correctly.",
+    "example": "Test a valid file, an empty file, a missing column, and duplicate IDs. If three of four behave as expected, the pass rate is 75%. Fix the failing case and rerun the entire set.",
+    "steps": [
+      "List scenarios",
+      "Write expected outputs",
+      "Run and retest"
+    ],
+    "question": "Why test an empty file if most files contain rows?",
+    "answer": "To make sure the tool recovers with useful guidance instead of failing silently."
+  },
+  {
+    "title": "Debug from evidence",
+    "explanation": "First reproduce an issue. Then narrow down where the output first becomes wrong. Change one thing at a time and keep the smallest failing example.",
+    "example": "A chart says there are 12 learners, but the register has 10 unique IDs. Check row count before and after the join. Two duplicated matches explain the extra rows, so inspect the join key.",
+    "steps": [
+      "Reproduce issue",
+      "Find first wrong step",
+      "Test the fix"
+    ],
+    "question": "What should you keep after fixing the duplicated records?",
+    "answer": "A small test that fails if the same defect returns."
+  },
+  {
+    "title": "Calculate impact honestly",
+    "explanation": "Compare a result with its baseline and include units and scope. Percentage-point changes compare two rates. Relative change divides the difference by the original value. Do not promise a result you did not measure.",
+    "example": "A report task drops from 25 to 10 minutes. The absolute saving is 15 minutes and the relative reduction is 15 ÷ 25 × 100 = 60% for that observed task.",
+    "steps": [
+      "Compare before and after",
+      "Compute change",
+      "State scope"
+    ],
+    "question": "If accuracy goes from 60% to 75%, what is the percentage-point gain?",
+    "answer": "15 percentage points. The relative increase is 15 ÷ 60 = 25%."
+  },
+  {
+    "title": "Write a good README",
+    "explanation": "A README tells a reader what the project does, how to run it, and how to verify it. Include example inputs and expected outputs. Keep real credentials and private data out of screenshots and examples.",
+    "example": "For a school reporting app, include the purpose, a setup command, a fictional sample CSV, a screenshot, and the limitation that the tool expects one unique ID per student.",
+    "steps": [
+      "Explain purpose",
+      "Document setup",
+      "Show expected result"
+    ],
+    "question": "Where should users find the columns required by the input?",
+    "answer": "In the README or a linked data dictionary with a sample file."
+  },
+  {
+    "title": "Make a clear demo",
+    "explanation": "Show the problem, one realistic task, and the result. Practise with the same test data you will use in the presentation. Explain one limitation and what you would improve next.",
+    "example": "In a 120-second demo, spend 20 seconds on the problem, 80 on an import and result, and 20 on limitations and next steps. Rehearse so the main task fits.",
+    "steps": [
+      "Introduce problem",
+      "Complete one task",
+      "Explain result"
+    ],
+    "question": "If you have time to show only one screen, which should it be?",
+    "answer": "The one demonstrating the key user action and the resulting value."
+  },
+  {
+    "title": "Explain your work in an interview",
+    "explanation": "Use a concrete example. Describe the situation, your responsibility, the action you took, and the result you measured. Say what you personally did and credit teammates for their contributions.",
+    "example": "A club had duplicate entries. You traced them to repeated student IDs, validated registrations, and reduced repeated rows from 12 to zero in one audited import. Mention the size of the dataset and how you checked the output.",
+    "steps": [
+      "Describe situation",
+      "Explain your action",
+      "Report measured result"
+    ],
+    "question": "What if you did not measure the time saved?",
+    "answer": "Say what you did measure and avoid guessing the time savings."
+  },
+  {
+    "title": "Capstone: School club operations tool",
+    "explanation": "Build a small project that imports fictional club sign-ups, checks IDs, and reports eligible and active membership. Package the sample data, tests, and instructions so a classmate can reproduce your result.",
+    "example": "For 30 eligible students and 18 active, report 60%. Add a case with zero eligible students and show “rate unavailable” instead of dividing by zero. Demonstrate both cases.",
+    "steps": [
+      "Build and test",
+      "Document evidence",
+      "Present your project"
+    ],
+    "question": "What makes the project ready to share?",
+    "answer": "A working demo, documented setup, test evidence, and honest limitations."
+  }
+]

@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { courseLessonPath } from "@/lib/course-paths";
 import { BookOpen, GraduationCap, ListChecks, LogOut, UserPlus, UserRound, UsersRound } from "lucide-react";
 import { TrainerDashboard } from "./trainer-dashboard";
 import { notFound } from "next/navigation";
@@ -87,7 +89,10 @@ export default async function RoleDashboard({ params, searchParams }: { params: 
             <Panel id="courses" title="My courses" description="View your enrollments or choose a course." icon={<GraduationCap size={20} />}>
               {user.enrolledCourses?.length
                 ? <ul className="academy-course-list">{user.enrolledCourses.map((title) => (
-                  <li key={title}><BookOpen size={17} aria-hidden="true" /><p>{title}</p></li>
+                  <li key={title}>
+                    <BookOpen size={17} aria-hidden="true" />
+                    <p>{courseLessonPath(title) ? <Link className="trainer-link" href={courseLessonPath(title)!}>{title}</Link> : title}</p>
+                  </li>
                 ))}</ul>
                 : <p className="academy-empty">You haven’t enrolled in any courses yet.</p>}
               {availableCourses.length > 0 && <div className="academy-enroll-form">

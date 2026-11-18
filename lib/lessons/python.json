@@ -1,0 +1,338 @@
+[
+  {
+    "title": "Ask a question data can answer",
+    "explanation": "Data analysis starts with a question you can test using measurements. State who or what you are measuring and over what time period. A prediction problem is different from a question about what already happened.",
+    "example": "Instead of “Is our team good?” ask “What fraction of the last 12 matches did our team win?” With 8 wins, the answer is 8 ÷ 12 ≈ 66.7%.",
+    "steps": [
+      "Question",
+      "Collect measurements",
+      "Answer"
+    ],
+    "question": "What information do you need besides the number of wins?",
+    "answer": "The total number of matches and the period you are studying."
+  },
+  {
+    "title": "Rows, columns and units",
+    "explanation": "A row usually describes one observation. Columns hold properties of that observation. A unit tells you how a number was measured. Write units in column names or a data dictionary.",
+    "example": "A sports table has one row per race and columns race_id, distance_m, and time_s. A race listed as 100 metres and 20 seconds has average speed 100 ÷ 20 = 5 m/s.",
+    "steps": [
+      "Observation",
+      "Fields and units",
+      "Calculation"
+    ],
+    "question": "Why is a column called distance harder to use than distance_m?",
+    "answer": "It does not tell you the number’s unit."
+  },
+  {
+    "title": "Python variables and types",
+    "explanation": "A variable is a name pointing to a value. Integers are whole numbers, floats can hold decimals, strings hold text, and booleans represent True or False. Use types that match the job.",
+    "example": "In Python, 18 + 2 evaluates to 20. The expression \"18\" + \"2\" evaluates to \"182\" because strings join together. To do arithmetic, convert with int(\"18\").",
+    "steps": [
+      "Read value",
+      "Check type",
+      "Use correct operation"
+    ],
+    "question": "What does int(\"7\") + 3 produce?",
+    "answer": "10, because int converts the string to a number."
+  },
+  {
+    "title": "Lists and indexing",
+    "explanation": "A list keeps items in order. Python indexes from zero, so the first item is at index 0. Slices include the starting index and stop before the ending index.",
+    "example": "In scores = [12, 15, 18, 20], scores[0] is 12 and scores[1:3] is [15, 18]. The final score at index 3 is outside that slice.",
+    "steps": [
+      "List",
+      "Choose positions",
+      "Read result"
+    ],
+    "question": "What does scores[:2] return here?",
+    "answer": "[12, 15], the items before index 2."
+  },
+  {
+    "title": "Loops and conditions",
+    "explanation": "A loop repeats a step for each item. A condition decides whether to count an item or take an action. Check whether your rule includes the boundary value.",
+    "example": "For scores [29, 30, 45, 50], count each result where score >= 30. Three qualify, including the score of exactly 30.",
+    "steps": [
+      "Visit each score",
+      "Test boundary",
+      "Count matches"
+    ],
+    "question": "How many qualify if the condition changes to score > 30?",
+    "answer": "Two, because 30 is then excluded."
+  },
+  {
+    "title": "Functions",
+    "explanation": "A function packages a reusable operation. Parameters are values you give the function. Return passes a result back to the caller. Handle invalid inputs before using them in a calculation.",
+    "example": "A function percent(part, total) returns 100 × part ÷ total for positive totals. percent(9, 12) returns 75. A total of zero needs an explicit policy because division by zero is undefined.",
+    "steps": [
+      "Give inputs",
+      "Apply rule",
+      "Return result"
+    ],
+    "question": "What does percent(7, 10) return?",
+    "answer": "70, meaning 70%."
+  },
+  {
+    "title": "Dictionaries and counts",
+    "explanation": "A dictionary maps a key to a value. Use it to keep a running count by category. Start an unseen key at zero before adding one.",
+    "example": "For match results [\"W\", \"D\", \"W\", \"L\"], the counts are W: 2, D: 1, L: 1. Check that the sum is 4, the number of observations.",
+    "steps": [
+      "Read category",
+      "Update count",
+      "Check total"
+    ],
+    "question": "What changes if one more draw is added?",
+    "answer": "D becomes 2 and the total becomes 5."
+  },
+  {
+    "title": "Read a CSV with pandas",
+    "explanation": "A CSV is a plain-text table. Its first line commonly names the columns. pandas reads the table with pd.read_csv(\"scores.csv\"). Check the parsed shape and values before calculating anything.",
+    "example": "If a file has one header, four observation rows, and three columns, the expected DataFrame shape is (4, 3). If it loads as (4, 1), the separator may be wrong.",
+    "steps": [
+      "Open CSV",
+      "Parse rows and columns",
+      "Check shape"
+    ],
+    "question": "Does the header normally count as an observation row?",
+    "answer": "No. It names the columns."
+  },
+  {
+    "title": "Inspect your DataFrame",
+    "explanation": "A DataFrame is a labelled table. Use df.head() to inspect example rows, df.shape to check size and df.dtypes to see which columns pandas considers numbers, dates, or text.",
+    "example": "A school reads 100 rows and expects four columns. df.shape shows (100, 5). Inspect the fifth column. It might be an extra ID column previously saved by a spreadsheet export.",
+    "steps": [
+      "Preview rows",
+      "Check dimensions",
+      "Inspect types"
+    ],
+    "question": "Can head() prove there are no bad rows later in a file?",
+    "answer": "No. It shows only an initial sample."
+  },
+  {
+    "title": "Select and filter",
+    "explanation": "Use a column selection to choose fields, and a boolean filter to keep matching rows. For multiple pandas conditions, place each in parentheses and join with & for AND or | for OR.",
+    "example": "For scores [58, 70, 74, 81], selecting marks at least 70 keeps 70, 74, and 81. In pandas that could be df.loc[df[\"marks\"] >= 70, [\"name\", \"marks\"]].",
+    "steps": [
+      "Choose condition",
+      "Keep matching rows",
+      "Select columns"
+    ],
+    "question": "Which scores are between 70 and 80 inclusive?",
+    "answer": "70 and 74."
+  },
+  {
+    "title": "Sort and rank",
+    "explanation": "Sorting arranges data. Decide the direction and any tie-breakers before assigning positions. Rank may give equal scores the same position, even if the table prints one row first.",
+    "example": "Scores 92, 88, 88, and 80 sorted descending stay in that order. With competition ranking the ranks are 1, 2, 2, 4. The tied 88s share second place.",
+    "steps": [
+      "Choose keys",
+      "Sort",
+      "Handle ties"
+    ],
+    "question": "What is the competition rank of the score 80?",
+    "answer": "Fourth, because three observations scored higher."
+  },
+  {
+    "title": "Missing values",
+    "explanation": "A missing value means you do not know the measurement. It does not automatically mean zero. Count missing values, investigate why they are missing, and document how you handle them.",
+    "example": "For recorded times [12, missing, 18], the mean of observed values is (12 + 18) ÷ 2 = 15. Filling missing with zero would instead give 10 and invent a zero-time observation.",
+    "steps": [
+      "Find missing cells",
+      "Choose a policy",
+      "Report it"
+    ],
+    "question": "Is an unrecorded race time the same as zero seconds?",
+    "answer": "No. Missing means the real value is unknown."
+  },
+  {
+    "title": "Duplicates and keys",
+    "explanation": "A key identifies the thing represented by a row. Two rows with the same student_id might be a duplicate in a registration table, but legitimate if each row represents a different quiz. Inspect the intended row meaning before deleting.",
+    "example": "IDs A01, A02, A02, A03 give four rows but three distinct IDs. If the table is one registration per student, review both A02 rows before keeping one.",
+    "steps": [
+      "Define row meaning",
+      "Find repeated keys",
+      "Review records"
+    ],
+    "question": "What key could identify one quiz record per student and quiz?",
+    "answer": "The combination of student_id and quiz_id."
+  },
+  {
+    "title": "Convert types safely",
+    "explanation": "A numeric-looking column can load as text when values contain labels or mistakes. Use a controlled conversion and inspect which entries failed. Keep the original values when you need a review trail.",
+    "example": "With pandas, pd.to_numeric(values, errors=\"coerce\") converts [\"12\", \"35\", \"absent\"] to two numbers and a missing value. Document that “absent” was not a numeric score.",
+    "steps": [
+      "Check original text",
+      "Convert",
+      "Review failures"
+    ],
+    "question": "Should “absent” become a zero without a stated rule?",
+    "answer": "No. Keep it missing or handle it using an explicit grading policy."
+  },
+  {
+    "title": "Mean, median and range",
+    "explanation": "The mean is the sum divided by the count. The median is the middle value after sorting, or the average of the two middle values for an even count. The range measures spread from minimum to maximum.",
+    "example": "For [3, 4, 5, 20], mean = 32 ÷ 4 = 8, median = (4 + 5) ÷ 2 = 4.5, and range = 20 − 3 = 17. The unusually large value pulls the mean upward.",
+    "steps": [
+      "Sort values",
+      "Find middle",
+      "Summarise spread"
+    ],
+    "question": "Which centre changes less when 20 becomes 200?",
+    "answer": "The median stays 4.5."
+  },
+  {
+    "title": "Percentages and rates",
+    "explanation": "A rate compares a part with a whole. Convert the fraction to a percentage by multiplying by 100. Compare rates rather than raw counts when group sizes differ.",
+    "example": "Class A submits 18 of 20 projects, or 90%. Class B submits 24 of 30, or 80%. B has more submissions, while A has the higher submission rate.",
+    "steps": [
+      "Count part",
+      "Divide by whole",
+      "Convert to percent"
+    ],
+    "question": "What is 15 submissions out of 25 as a percentage?",
+    "answer": "15 ÷ 25 × 100 = 60%."
+  },
+  {
+    "title": "Variance and standard deviation",
+    "explanation": "Spread describes how far values lie from the mean. For an entire population, variance is the average of squared differences from the mean. The standard deviation is the square root and uses the original unit.",
+    "example": "For [2, 4, 6], mean is 4. Squared differences are 4, 0, and 4. Population variance = 8 ÷ 3 ≈ 2.67 and standard deviation ≈ 1.63. A sample estimate usually divides by n − 1 instead.",
+    "steps": [
+      "Find mean",
+      "Square differences",
+      "Take square root of variance"
+    ],
+    "question": "What is the population standard deviation of [5, 5, 5]?",
+    "answer": "0. Each value equals the mean."
+  },
+  {
+    "title": "Group-by summaries",
+    "explanation": "Group-by splits rows into groups, computes a summary for each group, and combines those summaries into a table. Choose a denominator that answers your question.",
+    "example": "Group by class to compare quiz means. Scores for A are 60 and 80, so its mean is 70. B has 90 and 100, so its mean is 95. df.groupby(\"class\")[\"score\"].mean() computes the means.",
+    "steps": [
+      "Split by group",
+      "Summarise each",
+      "Compare results"
+    ],
+    "question": "What changes if you use sum instead of mean?",
+    "answer": "You get totals of 140 and 190. Totals answer a different question."
+  },
+  {
+    "title": "Join two datasets",
+    "explanation": "A join combines rows using a matching key. An inner join keeps matched keys. A left join retains every left-side row. Repeated keys can multiply rows, so check the expected relationship.",
+    "example": "A register has A01, A02, and A03, but quiz scores exist only for A01 and A03. A left join keeps all three registrations and leaves A02’s score missing.",
+    "steps": [
+      "Choose key",
+      "Match records",
+      "Check row count"
+    ],
+    "question": "How many rows would an inner join return in this example?",
+    "answer": "Two, the two matched IDs."
+  },
+  {
+    "title": "Wide and long tables",
+    "explanation": "Wide tables keep measurements in separate columns. Long tables put the measurement type in one column and the value in another. pandas melt can transform wide data into long data.",
+    "example": "For three students and two quiz columns, a complete melt produces 3 × 2 = 6 rows with student, quiz, and score. If you pivot back, each student–quiz pair should have one value.",
+    "steps": [
+      "Identify measures",
+      "Melt columns",
+      "Check row count"
+    ],
+    "question": "How many rows would four students and three quizzes produce?",
+    "answer": "4 × 3 = 12, assuming all combinations are included."
+  },
+  {
+    "title": "Dates and time trends",
+    "explanation": "Parse dates as dates before sorting or grouping. Time comparisons are more useful when grouped into consistent periods. Check for missing periods before describing a trend.",
+    "example": "Practice minutes on three days are 20, 25, and 15. Total practice is 60 minutes and the observed-day average is 60 ÷ 3 = 20. A missing fourth day cannot be assumed to be zero.",
+    "steps": [
+      "Parse dates",
+      "Group by period",
+      "Check coverage"
+    ],
+    "question": "Why check for a missing week before drawing a line chart?",
+    "answer": "A straight line between available points can hide the gap in measurements."
+  },
+  {
+    "title": "Bar charts",
+    "explanation": "Bar charts compare quantities across categories. Label the measure and start a count axis at zero so heights are visually proportional. Use the same units for every bar.",
+    "example": "Robotics has 24 members and chess has 12. On a chart with a zero baseline, the robotics bar is exactly twice as tall. Starting the axis at 10 makes the visual ratio misleading.",
+    "steps": [
+      "Choose categories",
+      "Start at zero",
+      "Compare heights"
+    ],
+    "question": "What should the vertical axis label say here?",
+    "answer": "Number of members."
+  },
+  {
+    "title": "Line charts",
+    "explanation": "A line chart shows how measurements change over ordered time. Use equally spaced time ticks when appropriate and mark gaps rather than guessing values. The slope indicates change per unit of time.",
+    "example": "A runner’s distance rises from 100 m at 10 s to 160 m at 20 s. Over that interval, average speed is (160 − 100) ÷ (20 − 10) = 6 m/s.",
+    "steps": [
+      "Plot time",
+      "Connect observations",
+      "Read change"
+    ],
+    "question": "How much distance was covered during that interval?",
+    "answer": "60 metres."
+  },
+  {
+    "title": "Histograms",
+    "explanation": "A histogram groups numeric values into intervals called bins. The height commonly shows the number in each bin when bin widths are equal. Changing bin boundaries changes the display.",
+    "example": "For scores [41, 49, 51, 56, 67], bins 40–49, 50–59, and 60–69 contain 2, 2, and 1 scores. The counts add to 5.",
+    "steps": [
+      "Choose intervals",
+      "Count values",
+      "Check total"
+    ],
+    "question": "Which bin contains 56?",
+    "answer": "50–59."
+  },
+  {
+    "title": "Scatterplots and correlation",
+    "explanation": "A scatterplot places two measurements for each observation on two axes. Look for patterns, clusters, and unusual points. A relationship can exist without proving that one measurement causes the other.",
+    "example": "Plot study hours on x and marks on y. If (1, 50), (2, 60), and (3, 70) lie on a rising trend, the illustrated slope is 10 marks per hour. Other factors may influence real marks.",
+    "steps": [
+      "Pair measurements",
+      "Plot points",
+      "Interpret cautiously"
+    ],
+    "question": "Can a rising scatterplot prove studying one more hour causes a 10-mark gain?",
+    "answer": "No. The plot shows an association in the observed data."
+  },
+  {
+    "title": "Outliers and robust checks",
+    "explanation": "An outlier is an unusual observation. Confirm units and source records before changing or removing it. Compare summaries with and without the point, and explain both if the decision matters.",
+    "example": "Network delay values [20, 22, 23, 25, 210] have mean 60 ms and median 23 ms. Without 210 the mean is 22.5 ms. Investigate whether 210 is a real spike.",
+    "steps": [
+      "Spot unusual value",
+      "Validate source",
+      "Compare summaries"
+    ],
+    "question": "Is a genuine delay spike worth keeping?",
+    "answer": "Often yes. It may be precisely the reliability problem you need to see."
+  },
+  {
+    "title": "Check and communicate results",
+    "explanation": "Before presenting a result, check the row counts, units, filters, and denominators. Give the finding in plain language and report what data was missing or excluded.",
+    "example": "The club register has 40 rows, including 4 blank response fields. If 27 of 36 respondents said yes, the response-based rate is 75%. State that four people did not respond.",
+    "steps": [
+      "Verify denominator",
+      "Summarise finding",
+      "State limitation"
+    ],
+    "question": "Why avoid saying “75% of all 40 club members said yes”?",
+    "answer": "The 75% uses 36 respondents, not all 40 members."
+  },
+  {
+    "title": "Mini-project: School activity dashboard",
+    "explanation": "Analyse a fictional school activity dataset. Keep a clean table, calculate participation rates by club, and create a bar chart. Write one paragraph on the finding and one on the data limitations.",
+    "example": "For clubs with 18 of 30 and 14 of 20 students active, plot 60% and 70%. Include the eligible counts next to the chart so viewers can interpret the rates.",
+    "steps": [
+      "Prepare data",
+      "Compute and plot",
+      "Explain the result"
+    ],
+    "question": "Which club has the higher rate and which has more active students?",
+    "answer": "The second has the higher rate, 70%. The first has more active students, 18."
+  }
+]
