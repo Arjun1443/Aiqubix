@@ -8,6 +8,7 @@ import { MongoServerError } from "mongodb";
 import { z } from "zod";
 import { accounts, endSession, profileFields, requireAccount, startSession, tokenHash } from "@/lib/academy-accounts";
 import { getCourses } from "@/lib/academy-courses";
+import { intakeReturnPath } from "@/lib/trainer-intake";
 import { getDatabase } from "@/lib/mongodb";
 import { hashPassword, verifyPassword } from "@/lib/password.mjs";
 
@@ -45,16 +46,18 @@ export async function login(_: FormResult, form: FormData): Promise<FormResult> 
   const invalid = { message: "Email or password is incorrect." };
   if (!parsed.success) return invalid;
   const { email, password } = parsed.data;
+  let student = false;
   try {
     if (!(await withinAttemptLimit("login", email))) return { message: "Too many attempts. Try again in 10 minutes." };
     const user = await accounts().findOne({ _id: email });
     const valid = await verifyPassword(password, user?.passwordHash);
     if (!user?.passwordHash || !valid) return invalid;
     await startSession(email);
+    student = user.role === "student";
   } catch {
     return unavailable;
   }
-  redirect("/dashboard");
+  redirect((student && intakeReturnPath(form.get("intake"))) || "/dashboard");
 }
 
 export async function register(_: FormResult, form: FormData): Promise<FormResult> {
@@ -69,7 +72,7 @@ export async function register(_: FormResult, form: FormData): Promise<FormResul
     if (error instanceof MongoServerError && error.code === 11000) return { message: "This account could not be registered. Try signing in." };
     return unavailable;
   }
-  redirect("/dashboard/student");
+  redirect(intakeReturnPath(form.get("intake")) ?? "/dashboard/student");
 }
 
 export async function inviteStaff(_: FormResult, form: FormData): Promise<FormResult> {

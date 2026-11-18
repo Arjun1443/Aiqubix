@@ -61,7 +61,7 @@ export const activities = {
 } satisfies Record<string, Activity>;
 
 export type ActivityKind = keyof typeof activities;
-export type TrainerBatch = { _id: string; trainer: string; name: string; course: string; students: string[] };
+export type TrainerBatch = { _id: string; trainer: string; name: string; course: string; students: string[]; sourceForm?: string };
 export type TrainerRecord = {
   _id: string; trainer: string; batch: string; kind: ActivityKind; title: string;
   values: Record<string, string>; updatedAt: Date;

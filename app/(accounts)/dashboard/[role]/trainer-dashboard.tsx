@@ -6,9 +6,10 @@ import { activities, sections, trainerBatches, trainerRecords, type ActivityFiel
 import { saveProfile, signOut } from "../../actions";
 import { AccountForm, Field } from "../../account-form";
 import { addLearner, createBatch, saveTrainerRecord } from "./trainer-actions";
+import { TrainerIntakePanel } from "./trainer-intake-panel";
 import { WorkspaceSummary } from "./workspace";
 
-type Query = { section?: string; batch?: string; edit?: string };
+type Query = { section?: string; batch?: string; edit?: string; intake?: string };
 const path = "/dashboard/trainer";
 function link(section: string, batch?: string, edit?: string) {
   const params = new URLSearchParams({ section });
@@ -58,7 +59,7 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
         <div>
           <p className="academy-kicker">Trainer workspace</p>
           <h1 className="academy-title">{title}</h1>
-          <p className="academy-description">{user.name}{batch && <> · {batch.name} · {batch.course}</>}</p>
+          <p className="academy-description">{user.name}{batch && <> · {batch.name} · {batch.course}{batch._id.startsWith("AIQ_B_") && <> · {batch._id}</>}</>}</p>
         </div>
         <form action={signOut}><button className="academy-button academy-button-secondary"><LogOut size={16} aria-hidden="true" /> Sign out</button></form>
       </header>
@@ -76,7 +77,7 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
               <input type="hidden" name="section" value={section} />
               <label className="academy-field">Current batch
                 <select name="batch" defaultValue={batch?._id} key={batch?._id} className="academy-input">
-                  {batches.map((item) => <option key={item._id} value={item._id}>{item.name} · {item.course}</option>)}
+                  {batches.map((item) => <option key={item._id} value={item._id}>{item.name} · {item.course}{item._id.startsWith("AIQ_B_") ? ` · ${item._id}` : ""}</option>)}
                 </select>
               </label>
               <button className="academy-button academy-button-secondary">Open batch</button>
@@ -99,7 +100,7 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
               </select></label>
             </AccountForm>
             {batches.length > 0 && <ul className="academy-course-list">{batches.map((item) => <li key={item._id}>
-              <div><Link className="trainer-link" href={link("batches", item._id)}>{item.name}</Link><small>{item.course} · {item.students.length} learners</small></div>
+              <div><Link className="trainer-link" href={link("batches", item._id)}>{item.name}</Link><small>{item.course} · {item.students.length} learners{item._id.startsWith("AIQ_B_") && <> · <strong>{item._id}</strong></>}</small></div>
             </li>)}</ul>}
           </section>}
           {section === "users" && batch && <section className="academy-panel academy-panel-body trainer-section">
@@ -128,6 +129,7 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
               {counts.map((item) => <div key={item.key}><dt><Link className="trainer-link" href={link(item.key, batch._id)}>{item.label}</Link></dt><dd>{item.value}</dd></div>)}
             </dl>
           </section>}
+          {section === "forms" && <TrainerIntakePanel owner={user._id} courses={courses} selected={query.intake} batch={batch?._id} />}
           {activity && kind && batch && <>
             <section className="academy-panel academy-panel-body trainer-section" key={`${batch._id}-${kind}-${selectedRecord?._id ?? "new"}`}>
               <h2>{selectedRecord ? "Edit" : "New"} {activity.title.toLowerCase()}</h2>
@@ -151,7 +153,7 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
               {rowList.length > 50 && <p className="academy-empty">Showing the 50 most recently updated records.</p>}
             </section>
           </>}
-          {!batch && (kind || section === "users" || section === "reports") && <p className="academy-panel academy-panel-body">
+          {!batch && ((kind && kind !== "forms") || section === "users" || section === "reports") && <p className="academy-panel academy-panel-body">
             Create a batch to use this section. <Link className="trainer-link" href={link("batches")}>Open Batch Details</Link>
           </p>}
           {section === "profile" && <section className="academy-panel academy-panel-body trainer-section">

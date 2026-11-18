@@ -37,7 +37,7 @@ function Panel({ title, description, icon, children, id, flush = false }: {
   );
 }
 
-export default async function RoleDashboard({ params, searchParams }: { params: Promise<{ role: string }>; searchParams: Promise<{ section?: string; batch?: string; edit?: string }> }) {
+export default async function RoleDashboard({ params, searchParams }: { params: Promise<{ role: string }>; searchParams: Promise<{ section?: string; batch?: string; edit?: string; intake?: string }> }) {
   const { role: pathRole } = await params;
   const role = roles.find((candidate) => candidate === pathRole);
   if (!role) notFound();
