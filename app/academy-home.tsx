@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -74,7 +75,6 @@ const adminTools: Tool[] = [
 
 const categories = ["All", "AI & GenAI", "Data & Analytics", "Career Skills"];
 const selectableItems = [
-  "Sign in",
   "Student workspace",
   "Access setup",
   ...studentTools.map((tool) => tool.title),
@@ -288,13 +288,12 @@ export default function AcademyHome({ courses }: { courses: Course[] }) {
           </nav>
 
           <Button
-            type="button"
+            asChild
             variant="outline"
             size="sm"
-            onClick={() => open("Sign in")}
             className="border-cyan-200/30 bg-cyan-200/5 text-cyan-100 hover:bg-cyan-200/15 hover:text-white"
           >
-            Sign in <ArrowRight aria-hidden="true" />
+            <Link href="/dashboard">Sign in <ArrowRight aria-hidden="true" /></Link>
           </Button>
         </div>
       </header>
