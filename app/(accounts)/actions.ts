@@ -148,3 +148,28 @@ export async function signOut() {
   await endSession();
   redirect("/login");
 }
+
+export async function updateProgress(_: FormResult, form: FormData): Promise<FormResult> {
+  const user = await requireAccount("student");
+  const title = form.get("course");
+  const rawCount = form.get("completed");
+  if (typeof title !== "string" || typeof rawCount !== "string" || !/^\d+$/.test(rawCount)) {
+    return { message: "Enter a valid number of completed lessons." };
+  }
+  const completed = Number(rawCount);
+  try {
+    const course = (await getCourses()).find((item) => item.title === title);
+    if (!course || !user.enrolledCourses?.includes(title) || !Number.isSafeInteger(completed) || completed > course.lessons) {
+      return { message: "Enter a count within the enrolled course’s lesson total." };
+    }
+    const result = await accounts().updateOne(
+      { _id: user._id, role: "student", enrolledCourses: title },
+      { $set: { [`courseProgress.${tokenHash(title)}`]: completed } },
+    );
+    if (!result.matchedCount) return { message: "You must be enrolled in this course." };
+  } catch {
+    return unavailable;
+  }
+  revalidatePath("/dashboard/student");
+  return { message: "Progress saved." };
+}

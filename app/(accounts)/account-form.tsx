@@ -21,15 +21,15 @@ export function AccountForm({ action, title, children }: {
   );
 }
 
-export function Field({ label, name, type = "text", defaultValue, autoComplete, minLength, maxLength, required = true }: {
+export function Field({ label, name, type = "text", defaultValue, autoComplete, minLength, maxLength, min, max, required = true }: {
   label: string; name: string; type?: string; defaultValue?: string;
-  autoComplete?: string; minLength?: number; maxLength?: number; required?: boolean;
+  autoComplete?: string; minLength?: number; maxLength?: number; min?: number; max?: number; required?: boolean;
 }) {
   return (
     <label className="academy-field">
       {label}
       <input name={name} type={type} required={required}
-        defaultValue={defaultValue} autoComplete={autoComplete} minLength={minLength} maxLength={maxLength}
+        defaultValue={defaultValue} autoComplete={autoComplete} minLength={minLength} maxLength={maxLength} min={min} max={max}
         className="academy-input" />
     </label>
   );

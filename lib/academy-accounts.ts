@@ -28,6 +28,7 @@ export type Account = {
   invitationHash?: string;
   invitationExpires?: Date;
   enrolledCourses?: string[];
+  courseProgress?: Record<string, number>;
 };
 
 type Session = { _id: string; email: string; expiresAt: Date };
