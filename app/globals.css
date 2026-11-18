@@ -102,22 +102,28 @@ body {
   background-size: 72px 72px, 108px 108px, auto, auto, auto;
 }
 
-.brand-logo-mark {
-  position: relative;
-  background: #082e60;
-  box-shadow: 0 8px 22px rgba(8, 46, 96, 0.22);
+.academy-wordmark {
+  display: block;
+  flex: 0 0 auto;
+  width: clamp(8rem, 37vw, 11rem);
+  aspect-ratio: 4.35;
+  overflow: hidden;
+  border-radius: .55rem;
+  background: #f7fbff;
 }
 
-.brand-logo-mark::after {
-  position: absolute;
-  right: 8px;
-  bottom: 8px;
-  width: 13px;
-  height: 4px;
-  border-radius: 999px;
-  background: #f28a1b;
-  content: "";
-  transform: skewX(-28deg);
+.academy-wordmark img {
+  display: block;
+  width: 115%;
+  max-width: none;
+  height: auto;
+  margin-inline: -7.5%;
+  transform: translateY(-13.5%);
+}
+
+.academy-wordmark:focus-visible {
+  outline: 2px solid #f28a1b;
+  outline-offset: 3px;
 }
 
 .site-shell [class*="border-white"] {
