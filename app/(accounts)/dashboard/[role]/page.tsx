@@ -1,4 +1,5 @@
 import { BookOpen, GraduationCap, ListChecks, LogOut, UserPlus, UserRound, UsersRound } from "lucide-react";
+import { TrainerDashboard } from "./trainer-dashboard";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { accounts, profileFields, requireAccount, roleLabels, roles, tokenHash, type Role } from "@/lib/academy-accounts";
@@ -36,11 +37,12 @@ function Panel({ title, description, icon, children, id, flush = false }: {
   );
 }
 
-export default async function RoleDashboard({ params }: { params: Promise<{ role: string }> }) {
+export default async function RoleDashboard({ params, searchParams }: { params: Promise<{ role: string }>; searchParams: Promise<{ section?: string; batch?: string; edit?: string }> }) {
   const { role: pathRole } = await params;
   const role = roles.find((candidate) => candidate === pathRole);
   if (!role) notFound();
   const user = await requireAccount(role);
+  if (role === "trainer") return <TrainerDashboard user={user} query={await searchParams} />;
   const courses = await getCourses();
   const canViewDirectory = role === "admin" || role === "senior-manager";
   const directory = canViewDirectory
@@ -59,9 +61,7 @@ export default async function RoleDashboard({ params }: { params: Promise<{ role
   const summary = role === "student"
     ? [{ label: "Enrolled courses", value: user.enrolledCourses?.length ?? 0, href: "#courses" },
        { label: "Lessons logged", value: progress.reduce((total, course) => total + course.completed, 0), href: "#progress" }]
-    : role === "trainer"
-      ? [{ label: "Courses in catalogue", value: courses.length, href: "#courses" }]
-      : role === "senior-manager"
+    : role === "senior-manager"
         ? [{ label: "Students shown", value: listed.filter((account) => account.role === "student").length, href: "#directory" },
            { label: "Trainers shown", value: listed.filter((account) => account.role === "trainer").length, href: "#directory" }]
         : [{ label: "Accounts shown", value: listed.length, href: "#directory" },
@@ -101,8 +101,8 @@ export default async function RoleDashboard({ params }: { params: Promise<{ role
               </div>}
             </Panel>
           )}
-          {(role === "trainer" || role === "admin") && (
-            <Panel id="courses" title={role === "trainer" ? "Teaching catalogue" : "Course catalogue"} icon={<BookOpen size={20} />}>
+          {role === "admin" && (
+            <Panel id="courses" title="Course catalogue" icon={<BookOpen size={20} />}>
               {courses.length
                 ? <ul className="academy-course-list">{courses.map((course) => (
                   <li key={course.title}>
@@ -149,11 +149,6 @@ export default async function RoleDashboard({ params }: { params: Promise<{ role
               <WorkspaceEmpty section="support" description="For help with your course or account, contact your trainer or academy administrator." />
             </div>
           </>}
-          {role === "trainer" && <div className="academy-workspace-modules">
-            <WorkspaceEmpty section="batches" description="Trainer-to-batch assignments haven’t been configured." />
-            <WorkspaceEmpty section="schedule" description="Live class scheduling hasn’t been configured." />
-            <WorkspaceEmpty section="reviews" description="Online submissions aren’t available for review yet." />
-          </div>}
           {role === "senior-manager" && <>
             <WorkspaceEmpty section="batches" description="Batch management hasn’t been configured." />
             <Panel id="reporting" title="Directory report" icon={<ListChecks size={20} />}>
