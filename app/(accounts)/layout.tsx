@@ -1,15 +1,23 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
+import "./accounts.css";
 
 export const runtime = "nodejs";
 
 export default function AccountsLayout({ children }: { children: ReactNode }) {
   return (
-    <main className="min-h-screen bg-[#06111f] px-5 py-10 text-slate-100">
-      <div className="mx-auto max-w-5xl">
-        <Link href="/" className="inline-block font-semibold text-cyan-200">AIQUBIX Academy</Link>
-        {children}
-      </div>
-    </main>
+    <div className="accounts-shell">
+      <header className="academy-topbar">
+        <div className="academy-topbar-inner">
+          <Link href="/" className="academy-brand">
+            <span className="academy-brand-mark" aria-hidden="true">A</span>
+            <span><span className="academy-brand-name">AIQUBIX</span><span className="academy-brand-subtitle">ACADEMY</span></span>
+          </Link>
+          <Link href="/#catalogue" className="academy-home-link">Course catalogue <ArrowUpRight size={15} aria-hidden="true" /></Link>
+        </div>
+      </header>
+      <main className="academy-main">{children}</main>
+    </div>
   );
 }

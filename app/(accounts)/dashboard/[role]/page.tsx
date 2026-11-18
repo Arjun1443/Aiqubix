@@ -1,11 +1,38 @@
+import { BookOpen, GraduationCap, LogOut, UserPlus, UserRound, UsersRound } from "lucide-react";
 import { notFound } from "next/navigation";
-import { accounts, profileFields, requireAccount, roleLabels, roles } from "@/lib/academy-accounts";
+import type { ReactNode } from "react";
+import { accounts, profileFields, requireAccount, roleLabels, roles, type Role } from "@/lib/academy-accounts";
 import { getCourses } from "@/lib/academy-courses";
 import { enroll, inviteStaff, saveProfile, signOut } from "../../actions";
 import { AccountForm, Field } from "../../account-form";
 
-const panel = "rounded-2xl border border-slate-700 bg-slate-900 p-5";
-const selectClass = "mt-2 block w-full rounded-lg border border-slate-600 bg-slate-950 p-2 text-white";
+const roleDescriptions: Record<Role, string> = {
+  student: "Manage your profile and enroll in academy courses.",
+  trainer: "Update your teaching profile and browse the course catalogue.",
+  "senior-manager": "View active student and trainer accounts.",
+  admin: "Review academy accounts and invite trainers and senior managers.",
+};
+
+function Panel({ title, description, icon, children, flush = false }: {
+  title: string;
+  description?: string;
+  icon: ReactNode;
+  children: ReactNode;
+  flush?: boolean;
+}) {
+  return (
+    <section className="academy-panel academy-directory">
+      <div className="academy-panel-heading">
+        <span className="academy-icon" aria-hidden="true">{icon}</span>
+        <div>
+          <h2>{title}</h2>
+          {description && <p>{description}</p>}
+        </div>
+      </div>
+      {flush ? children : <div className="academy-panel-body">{children}</div>}
+    </section>
+  );
+}
 
 export default async function RoleDashboard({ params }: { params: Promise<{ role: string }> }) {
   const { role: pathRole } = await params;
@@ -13,7 +40,8 @@ export default async function RoleDashboard({ params }: { params: Promise<{ role
   if (!role) notFound();
   const user = await requireAccount(role);
   const courses = role === "student" || role === "trainer" ? await getCourses() : [];
-  const directory = role === "admin" || role === "senior-manager"
+  const canViewDirectory = role === "admin" || role === "senior-manager";
+  const directory = canViewDirectory
     ? await accounts().find(
       role === "admin" ? {} : { role: { $in: ["student", "trainer"] }, passwordHash: { $exists: true } },
       { projection: { _id: 1, name: 1, role: 1, invitationExpires: 1 } },
@@ -22,68 +50,105 @@ export default async function RoleDashboard({ params }: { params: Promise<{ role
   const availableCourses = courses.filter((course) => !user.enrolledCourses?.includes(course.title));
 
   return (
-    <div className="mt-9 space-y-5">
-      <header className="flex flex-wrap items-start justify-between gap-3">
+    <div className="academy-dashboard">
+      <header className="academy-panel academy-dashboard-hero">
         <div>
-          <p className="text-sm text-cyan-200">{roleLabels[role]} dashboard</p>
-          <h1 className="text-3xl font-semibold">{user.name}</h1>
+          <p className="academy-kicker">{roleLabels[role]} dashboard</p>
+          <h1 className="academy-title">{user.name}</h1>
+          <p className="academy-description">{roleDescriptions[role]}</p>
         </div>
-        <form action={signOut}><button className="rounded-lg border border-slate-500 px-4 py-2">Sign out</button></form>
+        <form action={signOut}>
+          <button className="academy-button academy-button-secondary"><LogOut size={16} aria-hidden="true" /> Sign out</button>
+        </form>
       </header>
-      <div className="grid gap-5 md:grid-cols-2">
-        <section className={panel}>
-          <h2 className="text-xl font-semibold">My profile</h2>
-          <p className="mb-4 mt-1 break-all text-sm text-slate-300">{user._id}</p>
+      <div className={role === "senior-manager" ? "academy-dashboard-grid academy-dashboard-grid-manager" : "academy-dashboard-grid"}>
+        <Panel title="My profile" icon={<UserRound size={20} />}>
+          <p className="academy-email"><span>Account email</span>{user._id}</p>
           <AccountForm action={saveProfile} title="Save profile">
             <Field label="Full name" name="name" defaultValue={user.name} minLength={2} maxLength={100} />
             {Object.entries(profileFields[role]).map(([name, label]) =>
               <Field key={name} label={label} name={name} defaultValue={user.profile[name]} maxLength={500} required={false} />,
             )}
           </AccountForm>
-        </section>
-        {role === "student" && <section className={panel}>
-          <h2 className="mb-3 text-xl font-semibold">My courses</h2>
-          {user.enrolledCourses?.length
-            ? <ul className="mb-5 list-inside list-disc space-y-1">{user.enrolledCourses.map((title) => <li key={title}>{title}</li>)}</ul>
-            : <p className="mb-5 text-slate-300">You haven’t enrolled in any courses yet.</p>}
-          {availableCourses.length > 0 && <AccountForm action={enroll} title="Enroll">
-            <label className="block text-sm">Available courses
-              <select name="course" className={selectClass} required>
-                {availableCourses.map((course) => <option key={course.title}>{course.title}</option>)}
-              </select>
-            </label>
-          </AccountForm>}
-        </section>}
-        {role === "trainer" && <section className={panel}>
-          <h2 className="mb-3 text-xl font-semibold">Teaching catalogue</h2>
-          <ul className="space-y-3">{courses.map((course) => <li key={course.title}>
-            <p className="font-medium">{course.title}</p>
-            <p className="text-sm text-slate-300">{course.level} · {course.duration}</p>
-          </li>)}</ul>
-          {!courses.length && <p className="text-slate-300">There are no courses in the catalogue yet.</p>}
-        </section>}
-        {role === "admin" && <section className={panel}>
-          <h2 className="mb-4 text-xl font-semibold">Invite staff</h2>
-          <AccountForm action={inviteStaff} title="Generate activation code">
-            <Field label="Full name" name="name" minLength={2} maxLength={100} />
-            <Field label="Email" name="email" type="email" maxLength={254} />
-            <label className="block text-sm">Role
-              <select name="role" className={selectClass}><option value="trainer">Trainer</option><option value="senior-manager">Senior Manager</option></select>
-            </label>
-          </AccountForm>
-        </section>}
+        </Panel>
+        {role === "student" && (
+          <Panel title="My courses" description="View your enrollments or choose a course." icon={<GraduationCap size={20} />}>
+            {user.enrolledCourses?.length
+              ? <ul className="academy-course-list">{user.enrolledCourses.map((title) => (
+                <li key={title}><BookOpen size={17} aria-hidden="true" /><p>{title}</p></li>
+              ))}</ul>
+              : <p className="academy-empty">You haven’t enrolled in any courses yet.</p>}
+            {availableCourses.length > 0 && <div className="academy-enroll-form">
+              <AccountForm action={enroll} title="Enroll">
+                <label className="academy-field">Available courses
+                  <select name="course" className="academy-input" required>
+                    {availableCourses.map((course) => <option key={course.title}>{course.title}</option>)}
+                  </select>
+                </label>
+              </AccountForm>
+            </div>}
+          </Panel>
+        )}
+        {role === "trainer" && (
+          <Panel title="Teaching catalogue" icon={<BookOpen size={20} />}>
+            {courses.length
+              ? <ul className="academy-course-list">{courses.map((course) => (
+                <li key={course.title}>
+                  <BookOpen size={17} aria-hidden="true" />
+                  <div><p>{course.title}</p><small>{course.level} · {course.duration}</small></div>
+                </li>
+              ))}</ul>
+              : <p className="academy-empty">There are no courses in the catalogue yet.</p>}
+          </Panel>
+        )}
+        {role === "admin" && (
+          <Panel title="Invite staff" description="Create a one-time activation code for a staff member." icon={<UserPlus size={20} />}>
+            <AccountForm action={inviteStaff} title="Generate activation code">
+              <Field label="Full name" name="name" minLength={2} maxLength={100} />
+              <Field label="Email" name="email" type="email" maxLength={254} />
+              <label className="academy-field">Role
+                <select name="role" className="academy-input">
+                  <option value="trainer">Trainer</option>
+                  <option value="senior-manager">Senior Manager</option>
+                </select>
+              </label>
+            </AccountForm>
+          </Panel>
+        )}
+        {role === "senior-manager" && <Directory directory={directory} role={role} />}
       </div>
-      {(role === "admin" || role === "senior-manager") && <section className={panel}>
-        <h2 className="mb-4 text-xl font-semibold">{role === "admin" ? "Account directory" : "Students and trainers"}</h2>
-        {directory.length ? <div className="overflow-x-auto"><table className="w-full text-left text-sm">
-          <thead className="text-slate-300"><tr><th className="p-2">Name</th><th className="p-2">Email</th><th className="p-2">Role</th>{role === "admin" && <th className="p-2">Status</th>}</tr></thead>
-          <tbody>{directory.slice(0, 100).map((account) => <tr key={account._id} className="border-t border-slate-700">
-            <td className="p-2">{account.name}</td><td className="p-2">{account._id}</td><td className="p-2">{roleLabels[account.role]}</td>
-            {role === "admin" && <td className="p-2">{account.invitationExpires ? account.invitationExpires > new Date() ? "Invited" : "Invite expired" : "Active"}</td>}
-          </tr>)}</tbody>
-        </table></div> : <p className="text-slate-300">No accounts to show yet.</p>}
-        {directory.length > 100 && <p className="mt-3 text-sm text-slate-300">Showing the first 100 accounts.</p>}
-      </section>}
+      {role === "admin" && <Directory directory={directory} role={role} />}
     </div>
+  );
+}
+
+function Directory({ directory, role }: {
+  directory: { _id: string; name: string; role: Role; invitationExpires?: Date }[];
+  role: "admin" | "senior-manager";
+}) {
+  const isAdmin = role === "admin";
+  return (
+    <Panel title={isAdmin ? "Account directory" : "Students and trainers"} icon={<UsersRound size={20} />} flush>
+      {directory.length ? (
+        <div className="academy-table-scroll" tabIndex={0} role="region" aria-label={isAdmin ? "Account directory" : "Student and trainer directory"}>
+          <table className="academy-table">
+            <thead>
+              <tr><th scope="col">Name</th><th scope="col">Email</th><th scope="col">Role</th>{isAdmin && <th scope="col">Status</th>}</tr>
+            </thead>
+            <tbody>{directory.slice(0, 100).map((account) => (
+              <tr key={account._id}>
+                <td>{account.name}</td>
+                <td>{account._id}</td>
+                <td>{roleLabels[account.role]}</td>
+                {isAdmin && <td><span className="academy-status">
+                  {account.invitationExpires ? account.invitationExpires > new Date() ? "Invited" : "Invite expired" : "Active"}
+                </span></td>}
+              </tr>
+            ))}</tbody>
+          </table>
+        </div>
+      ) : <p className="academy-panel-body academy-empty">No accounts to show yet.</p>}
+      {directory.length > 100 && <p className="academy-panel-body academy-empty">Showing the first 100 accounts.</p>}
+    </Panel>
   );
 }

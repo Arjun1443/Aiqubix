@@ -10,13 +10,13 @@ export function AccountForm({ action, title, children }: {
 }) {
   const [state, submit, pending] = useActionState(action, { message: "" });
   return (
-    <form action={submit} className="space-y-4">
+    <form action={submit} className="academy-form">
       {children}
-      <button type="submit" disabled={pending} className="rounded-lg bg-cyan-200 px-4 py-2 font-semibold text-slate-950 disabled:opacity-60">
+      <button type="submit" disabled={pending} className="academy-button">
         {pending ? "Saving…" : title}
       </button>
-      {state.message && <p role="status" className="text-sm text-cyan-100">{state.message}</p>}
-      {state.invite && <output className="block break-all rounded-lg bg-slate-950 p-3 font-mono text-sm text-cyan-100">{state.invite}</output>}
+      {state.message && <p role="status" className="academy-form-message">{state.message}</p>}
+      {state.invite && <output className="academy-code">{state.invite}</output>}
     </form>
   );
 }
@@ -26,11 +26,11 @@ export function Field({ label, name, type = "text", defaultValue, autoComplete, 
   autoComplete?: string; minLength?: number; maxLength?: number; required?: boolean;
 }) {
   return (
-    <label className="block text-sm font-medium text-slate-200">
+    <label className="academy-field">
       {label}
       <input name={name} type={type} required={required}
         defaultValue={defaultValue} autoComplete={autoComplete} minLength={minLength} maxLength={maxLength}
-        className="mt-1.5 block w-full rounded-lg border border-slate-600 bg-slate-950 px-3 py-2 text-white" />
+        className="academy-input" />
     </label>
   );
 }
