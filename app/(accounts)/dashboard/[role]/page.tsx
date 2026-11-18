@@ -2,7 +2,7 @@ import Link from "next/link";
 import { courseLessonPath } from "@/lib/course-paths";
 import { BookOpen, GraduationCap, ListChecks, LogOut, UserPlus, UserRound, UsersRound } from "lucide-react";
 import { TrainerDashboard } from "./trainer-dashboard";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { accounts, profileFields, requireAccount, roleLabels, roles, tokenHash, type Role } from "@/lib/academy-accounts";
 import { getCourses } from "@/lib/academy-courses";
@@ -13,8 +13,9 @@ import { WorkspaceEmpty, WorkspaceNav, WorkspaceSummary } from "./workspace";
 const roleDescriptions: Record<Role, string> = {
   student: "Manage your profile and enroll in academy courses.",
   trainer: "Update your teaching profile and browse the course catalogue.",
-  "senior-manager": "View active student and trainer accounts.",
-  admin: "Review academy accounts and invite trainers and senior managers.",
+  employee: "Track attendance, leave and appraisals.",
+  "senior-manager": "Manage employees and oversee student and trainer accounts.",
+  admin: "Review academy accounts and invite employees, trainers and senior managers.",
 };
 
 function Panel({ title, description, icon, children, id, flush = false }: {
@@ -44,6 +45,7 @@ export default async function RoleDashboard({ params, searchParams }: { params: 
   const role = roles.find((candidate) => candidate === pathRole);
   if (!role) notFound();
   const user = await requireAccount(role);
+  if (role === "employee") redirect("/dashboard/workforce");
   if (role === "trainer") return <TrainerDashboard user={user} query={await searchParams} />;
   const courses = await getCourses();
   const canViewDirectory = role === "admin" || role === "senior-manager";
@@ -77,6 +79,7 @@ export default async function RoleDashboard({ params, searchParams }: { params: 
           <h1 className="academy-title">{user.name}</h1>
           <p className="academy-description">{roleDescriptions[role]}</p>
         </div>
+        {role === "senior-manager" && <Link className="academy-button" href="/dashboard/senior-manager/employees">Employee management</Link>}
         <form action={signOut}>
           <button className="academy-button academy-button-secondary"><LogOut size={16} aria-hidden="true" /> Sign out</button>
         </form>
@@ -126,6 +129,7 @@ export default async function RoleDashboard({ params, searchParams }: { params: 
                 <label className="academy-field">Role
                   <select name="role" className="academy-input">
                     <option value="trainer">Trainer</option>
+                    <option value="employee">Employee</option>
                     <option value="senior-manager">Senior Manager</option>
                   </select>
                 </label>

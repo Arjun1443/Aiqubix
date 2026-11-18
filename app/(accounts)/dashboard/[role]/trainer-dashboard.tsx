@@ -62,7 +62,10 @@ export async function TrainerDashboard({ user, query }: { user: Account; query: 
           <h1 className="academy-title">{title}</h1>
           <p className="academy-description">{user.name}{batch && <> · {batch.name} · {batch.course}{batch._id.startsWith("AIQ_B_") && <> · {batch._id}</>}</>}</p>
         </div>
-        <form action={signOut}><button className="academy-button academy-button-secondary"><LogOut size={16} aria-hidden="true" /> Sign out</button></form>
+        <div className="flex flex-wrap gap-2">
+          <Link className="academy-button academy-button-secondary" href="/dashboard/workforce">My work &amp; leave</Link>
+          <form action={signOut}><button className="academy-button academy-button-secondary"><LogOut size={16} aria-hidden="true" /> Sign out</button></form>
+        </div>
       </header>
       <div className="academy-workspace-grid">
         <nav className="academy-panel academy-workspace-nav trainer-nav" aria-label="Trainer sections">
