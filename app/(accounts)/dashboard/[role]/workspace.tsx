@@ -13,7 +13,6 @@ const sections = {
   certificates: { label: "Certificates", icon: Award },
   support: { label: "Support", icon: Headphones },
   batches: { label: "Batches", icon: GraduationCap },
-  reviews: { label: "Submission reviews", icon: ClipboardList },
   directory: { label: "Directory", icon: UsersRound },
   reporting: { label: "Reports", icon: ListChecks },
   invitations: { label: "Staff invitations", icon: UserPlus },
@@ -22,14 +21,13 @@ const sections = {
 };
 
 type Section = keyof typeof sections;
-const navigation: Record<Role, Section[]> = {
+const navigation: Record<Exclude<Role, "trainer">, Section[]> = {
   student: ["overview", "courses", "progress", "schedule", "assignments", "certificates", "support", "profile"],
-  trainer: ["overview", "courses", "batches", "schedule", "reviews", "profile"],
   "senior-manager": ["overview", "directory", "batches", "reporting", "profile"],
   admin: ["overview", "invitations", "directory", "courses", "settings", "profile"],
 };
 
-export function WorkspaceNav({ role }: { role: Role }) {
+export function WorkspaceNav({ role }: { role: Exclude<Role, "trainer"> }) {
   return (
     <nav className="academy-panel academy-workspace-nav" aria-label="Dashboard sections">
       {navigation[role].map((section) => {

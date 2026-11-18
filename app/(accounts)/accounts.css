@@ -104,3 +104,23 @@
 .academy-report div { display: flex; justify-content: space-between; gap: 1rem; padding: .65rem .85rem; background: var(--academy-pale); border-radius: .5rem; }
 .academy-report dt { font-size: .9rem; }
 .academy-report dd { font-weight: 700; }
+.trainer-nav a { justify-content: space-between; width: 100%; }
+.trainer-nav a[aria-current="page"] { background: var(--academy-navy); color: var(--academy-white); }
+.trainer-nav a[aria-current="page"] svg { color: var(--academy-orange); }
+.trainer-nav a svg { flex-shrink: 0; }
+.trainer-section, .trainer-record-list, .trainer-record-list dl { display: grid; gap: 1rem; }
+.trainer-section h2 { font-size: 1.25rem; font-weight: 750; }
+.trainer-batch-switcher { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .8rem; }
+.trainer-link { text-decoration: underline; text-decoration-color: var(--academy-orange); text-underline-offset: .2rem; font-weight: 650; }
+.trainer-record-list li { padding: 1rem; background: var(--academy-pale); border: 1px solid var(--academy-border); border-radius: .65rem; overflow-wrap: anywhere; }
+.trainer-record-list header { display: flex; justify-content: space-between; gap: .6rem; margin-bottom: .7rem; }
+.trainer-record-list h3 { font-weight: 750; }
+.trainer-record-list dl { grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: .7rem; }
+.trainer-record-list dt { font-size: .76rem; font-weight: 650; color: var(--academy-muted); }
+.trainer-record-list dd { font-size: .9rem; white-space: pre-wrap; }
+@media (max-width: 63.99rem) {
+  .trainer-nav a { width: auto; }
+}
+@media (max-width: 28rem) {
+  .trainer-batch-switcher { grid-template-columns: 1fr; }
+}
