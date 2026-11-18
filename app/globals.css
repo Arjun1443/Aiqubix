@@ -103,77 +103,19 @@ body {
 }
 
 .academy-wordmark {
-  display: grid;
+  display: block;
   flex: 0 0 auto;
-  justify-items: center;
-  gap: .2rem;
-  padding: .45rem .6rem .4rem;
+  width: clamp(8.25rem, 39vw, 11.5rem);
+  overflow: hidden;
   border-radius: .45rem;
-  background: #f7fbff;
-  color: #082e60;
-  white-space: nowrap;
+  background: linear-gradient(140deg, #e4f0fc, #f7fbff 65%, #e7f1fb);
 }
 
-.academy-wordmark-name {
-  display: flex;
-  align-items: baseline;
-  font-family: "Arial", sans-serif;
-  font-size: clamp(1.45rem, 5vw, 2.02rem);
-  font-weight: 800;
-  letter-spacing: .015em;
-  line-height: .9;
+.academy-wordmark svg {
+  display: block;
+  width: 100%;
+  height: auto;
 }
-
-.academy-wordmark-a,
-.academy-wordmark-q { position: relative; }
-
-.academy-wordmark-a {
-  display: inline-block;
-  width: .92em;
-  height: .74em;
-  align-self: center;
-  margin-right: .015em;
-  font-size: inherit;
-  color: transparent;
-}
-
-.academy-wordmark-a::before,
-.academy-wordmark-a::after,
-.academy-wordmark-q::after {
-  content: "";
-  position: absolute;
-}
-
-.academy-wordmark-a::before {
-  inset: 0;
-  background: #082e60;
-  clip-path: polygon(0 100%, 43% 0, 57% 0, 100% 100%, 79% 100%, 50% 28%, 21% 100%);
-}
-
-.academy-wordmark-a::after {
-  inset: 0;
-  background: #f28a1b;
-  clip-path: polygon(41% 67%, 59% 67%, 65% 80%, 35% 80%);
-}
-
-.academy-wordmark-q::after {
-  right: -.02em;
-  bottom: -.015em;
-  width: .22em;
-  height: .11em;
-  background: #f28a1b;
-  transform: skewX(38deg);
-}
-
-.academy-wordmark-tagline {
-  font-size: clamp(.34rem, 1.4vw, .47rem);
-  font-weight: 750;
-  line-height: 1.2;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-}
-
-.academy-wordmark-tagline span { padding-inline: .12em; }
 
 .academy-wordmark:focus-visible {
   outline: 2px solid #f28a1b;
