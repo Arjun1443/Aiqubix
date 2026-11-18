@@ -51,8 +51,8 @@ export async function login(_: FormResult, form: FormData): Promise<FormResult> 
     if (!(await withinAttemptLimit("login", email))) return { message: "Too many attempts. Try again in 10 minutes." };
     const user = await accounts().findOne({ _id: email });
     const valid = await verifyPassword(password, user?.passwordHash);
-    if (!user?.passwordHash || !valid) return invalid;
-    await startSession(email);
+    if (!user?.passwordHash || !valid || user.employmentStatus === "inactive") return invalid;
+    await startSession(email, user.role);
     student = user.role === "student";
   } catch {
     return unavailable;
@@ -77,7 +77,7 @@ export async function register(_: FormResult, form: FormData): Promise<FormResul
 
 export async function inviteStaff(_: FormResult, form: FormData): Promise<FormResult> {
   await requireAccount("admin");
-  const parsed = z.object({ email: emailSchema, name: nameSchema, role: z.enum(["trainer", "senior-manager"]) }).safeParse(Object.fromEntries(form));
+  const parsed = z.object({ email: emailSchema, name: nameSchema, role: z.enum(["trainer", "employee", "senior-manager"]) }).safeParse(Object.fromEntries(form));
   if (!parsed.success) return { message: "Enter a name, valid email and staff role." };
   const { email, name, role } = parsed.data;
   const token = randomBytes(32).toString("hex");
@@ -102,13 +102,14 @@ export async function activate(_: FormResult, form: FormData): Promise<FormResul
   try {
     if (!(await withinAttemptLimit("activate", email))) return { message: "Too many attempts. Try again in 10 minutes." };
     const filter = { _id: email, passwordHash: { $exists: false }, invitationHash: tokenHash(code), invitationExpires: { $gt: new Date() } };
-    if (!(await accounts().findOne(filter, { projection: { _id: 1 } }))) return { message: "Invalid or expired activation code." };
+    const invited = await accounts().findOne(filter, { projection: { role: 1 } });
+    if (!invited) return { message: "Invalid or expired activation code." };
     const result = await accounts().updateOne({ ...filter, invitationExpires: { $gt: new Date() } }, {
       $set: { passwordHash: await hashPassword(password) },
       $unset: { invitationHash: "", invitationExpires: "" },
     });
     if (result.modifiedCount !== 1) return { message: "Invalid or expired activation code." };
-    await startSession(email);
+    await startSession(email, invited.role);
   } catch {
     return unavailable;
   }

@@ -21,13 +21,13 @@ const sections = {
 };
 
 type Section = keyof typeof sections;
-const navigation: Record<Exclude<Role, "trainer">, Section[]> = {
+const navigation: Record<Exclude<Role, "trainer" | "employee">, Section[]> = {
   student: ["overview", "courses", "progress", "schedule", "assignments", "certificates", "support", "profile"],
   "senior-manager": ["overview", "directory", "batches", "reporting", "profile"],
   admin: ["overview", "invitations", "directory", "courses", "settings", "profile"],
 };
 
-export function WorkspaceNav({ role }: { role: Exclude<Role, "trainer"> }) {
+export function WorkspaceNav({ role }: { role: Exclude<Role, "trainer" | "employee"> }) {
   return (
     <nav className="academy-panel academy-workspace-nav" aria-label="Dashboard sections">
       {navigation[role].map((section) => {
