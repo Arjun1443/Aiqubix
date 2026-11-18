@@ -1,0 +1,290 @@
+[
+  {
+    "title": "Why use retrieval?",
+    "explanation": "Retrieval-augmented generation, or RAG, finds relevant information before asking a language model to answer. It helps when facts change or live in your own documents. Keeping a source current is different from retraining a model.",
+    "example": "The school adds a new deadline to a handbook. Index the updated version and ask “When are team entries due?” A grounded answer gives the date and the handbook page.",
+    "steps": [
+      "Question",
+      "Find evidence",
+      "Answer from evidence"
+    ],
+    "question": "When should your assistant refuse to guess?",
+    "answer": "When its retrieved sources do not contain enough evidence."
+  },
+  {
+    "title": "The indexing and answering pipelines",
+    "explanation": "RAG usually has two paths. Indexing prepares documents for search. Answering retrieves prepared passages for a question and builds a response. Index new material when the source changes.",
+    "example": "Indexing turns 12 sections into 48 chunks. An answer request retrieves three chunks. It does not normally send all 48 or rerun indexing for each question.",
+    "steps": [
+      "Index documents",
+      "Retrieve at question time",
+      "Generate answer"
+    ],
+    "question": "Which pipeline runs when a new handbook PDF arrives?",
+    "answer": "The indexing pipeline must process the new source."
+  },
+  {
+    "title": "Read and inspect source files",
+    "explanation": "A document loader extracts text and metadata from a file or other source. Scanned pages may require optical character recognition. Verify page order and numbers before embedding the extracted text.",
+    "example": "A 10-page file extracts text from only seven pages. The extraction coverage is 7 ÷ 10 = 70%. Find and repair the three missing pages before indexing.",
+    "steps": [
+      "Load source",
+      "Inspect pages",
+      "Fix extraction gaps"
+    ],
+    "question": "What might empty extracted text on a visible page indicate?",
+    "answer": "The page may be an image scan that needs OCR."
+  },
+  {
+    "title": "Metadata and citations",
+    "explanation": "Metadata is information about a passage such as file name, page, and version. Store enough metadata to cite evidence and filter searches. Keep stable document identifiers so updates can replace earlier material.",
+    "example": "Store “Handbook 2026,” page 12, and revision 2 with a paragraph about holidays. The answer can show those details instead of claiming the information came from an unspecified document.",
+    "steps": [
+      "Extract passage",
+      "Attach metadata",
+      "Cite source"
+    ],
+    "question": "What makes a citation easier to verify?",
+    "answer": "A clear document name, page or section, and version where needed."
+  },
+  {
+    "title": "Chunking and overlap",
+    "explanation": "A chunk is a passage stored as a search unit. Large chunks can include unrelated topics. Small chunks can lose necessary context. Overlap shares some text between neighbours and can preserve boundary details.",
+    "example": "With chunks of 100 words and overlap of 20, each full window advances 80 words. Three full windows cover 100 + 80 + 80 = 260 unique positions.",
+    "steps": [
+      "Split document",
+      "Share boundary text",
+      "Test retrieval"
+    ],
+    "question": "What happens to the index if you add more overlap?",
+    "answer": "It usually stores more chunks for the same document and repeats more text."
+  },
+  {
+    "title": "Embeddings for search",
+    "explanation": "An embedding model returns a numeric vector for a passage or question. Use the same compatible model for the two. Similar wording or meaning can produce related vectors, but the quality must be tested on your material.",
+    "example": "A query “borrow a library book” can match “loan policy” even without a shared exact verb. A query for the exact ID LAB-204 may still benefit from a keyword index.",
+    "steps": [
+      "Encode passage",
+      "Encode question",
+      "Compare"
+    ],
+    "question": "Why keep a keyword search when you have embeddings?",
+    "answer": "Exact identifiers and names can be easier to match lexically."
+  },
+  {
+    "title": "Euclidean distance",
+    "explanation": "Euclidean distance is straight-line distance. Subtract each coordinate, square the differences, sum them, and take the square root. When features use different scales, one feature can dominate the distance.",
+    "example": "Between (1, 2) and (4, 6), differences are 3 and 4. The distance is √(3² + 4²) = √25 = 5. Smaller distances indicate closer points in this space.",
+    "steps": [
+      "Subtract coordinates",
+      "Sum squared differences",
+      "Square root"
+    ],
+    "question": "What is the distance between (2, 3) and (2, 8)?",
+    "answer": "5, because only the second coordinate differs."
+  },
+  {
+    "title": "Cosine similarity",
+    "explanation": "Cosine similarity compares direction. Divide the dot product by the product of both vector lengths. It ranges from −1 to 1 for nonzero real vectors. A zero vector has undefined cosine similarity.",
+    "example": "For (1, 0) and (3, 4), the dot product is 3. Their lengths are 1 and 5. Cosine similarity = 3 ÷ 5 = 0.6. For (1, 0) and (2, 0), it is 1.",
+    "steps": [
+      "Compute dot product",
+      "Find both lengths",
+      "Divide"
+    ],
+    "question": "What is cosine similarity for (1, 0) and (0, 1)?",
+    "answer": "0. The vectors are perpendicular."
+  },
+  {
+    "title": "Keyword and hybrid retrieval",
+    "explanation": "Keyword retrieval looks for terms. Vector retrieval looks for related representations. A hybrid approach combines them. Compare outputs on a small benchmark because the two score types may use different ranges.",
+    "example": "For “Project ZX-5 timeline,” keyword matching can find ZX-5 exactly, while vector results might surface “project schedule.” Combine ranked lists and inspect which result has the needed facts.",
+    "steps": [
+      "Get keyword results",
+      "Get vector results",
+      "Combine ranks"
+    ],
+    "question": "Why avoid adding two raw scores without checking their scales?",
+    "answer": "A larger numerical range can dominate the combined score."
+  },
+  {
+    "title": "Vector stores and top-k",
+    "explanation": "A vector store indexes vectors and links them to text and metadata. The parameter k controls how many results to return. A larger k can raise coverage but can also add irrelevant text and increase latency.",
+    "example": "If ranking returns five passages and k = 3, only the first three are used. If the answer is in fourth place, increase k or improve ranking and measure the trade-off.",
+    "steps": [
+      "Index vectors",
+      "Rank by similarity",
+      "Choose top results"
+    ],
+    "question": "Does increasing k fix a missing source document?",
+    "answer": "No. The document must first be loaded and indexed."
+  },
+  {
+    "title": "Filters and access control",
+    "explanation": "Metadata filters narrow search by fields such as course, version, or permitted group. Apply access control before passages reach the generator. A model instruction is not a substitute for authorisation.",
+    "example": "A student can read the notice directory but not staff-only reports. Filter the search to authorised documents and then retrieve the top three results. The reply should never receive staff-only passages.",
+    "steps": [
+      "Check permissions",
+      "Filter index",
+      "Retrieve allowed passages"
+    ],
+    "question": "Where should the application enforce document permissions?",
+    "answer": "In the data access or retrieval layer before giving context to the model."
+  },
+  {
+    "title": "Reranking",
+    "explanation": "Reranking scores a small list of initial search results using a second method that can examine relevance more closely. It can improve ordering, but it cannot recover a passage absent from the initial list.",
+    "example": "The initial ranks are C, B, A. The answer is in A. A reranker moves A first, which helps when the final prompt has room for only one passage.",
+    "steps": [
+      "Retrieve candidates",
+      "Score relevance again",
+      "Keep best"
+    ],
+    "question": "Can a reranker move a document it never received to first place?",
+    "answer": "No. The first-stage candidate list must contain it."
+  },
+  {
+    "title": "Context packing",
+    "explanation": "Context packing decides which passages fit in the prompt. Keep evidence with its short citation, remove repeated content, and reserve room for output. Add chunks only when they improve the answer.",
+    "example": "A 3,000-token budget leaves 400 for output and 200 for instructions. Evidence may use 2,400 tokens. Three 850-token chunks would need 2,550, so shorten or omit one.",
+    "steps": [
+      "Set budget",
+      "Prune repetition",
+      "Fit passages"
+    ],
+    "question": "How many 600-token chunks fit in 2,400 tokens before citation overhead?",
+    "answer": "Four."
+  },
+  {
+    "title": "Grounded answer prompts",
+    "explanation": "Tell the assistant to answer from supplied passages, cite its evidence, and say when it cannot find an answer. Keep user instructions and outside document text clearly separated.",
+    "example": "Passage A contains the sports practice time. Passage B lists uniforms. Ask when practice starts and cite A. If the question asks about the venue and neither passage supplies it, report that gap.",
+    "steps": [
+      "Provide context",
+      "Ask exact question",
+      "Cite or abstain"
+    ],
+    "question": "Should the model infer a usual practice venue from unrelated text?",
+    "answer": "No. State that the supplied sources do not identify the venue."
+  },
+  {
+    "title": "LangChain documents and splitters",
+    "explanation": "In LangChain, a Document pairs page_content with metadata. A text splitter prepares manageable passages. Preserve metadata as you split so each result can point back to its source.",
+    "example": "A chapter with four short sections is loaded as a Document. Splitting produces six chunks. Each retains the chapter ID and the source information, so a later response can cite the right material.",
+    "steps": [
+      "Create Document",
+      "Split text",
+      "Keep metadata"
+    ],
+    "question": "Which field contains the extracted text in a Document?",
+    "answer": "page_content."
+  },
+  {
+    "title": "Building a retriever in LangChain",
+    "explanation": "A common LangChain flow creates a vector store from documents and an embedding model, then exposes it through a retriever. The particular integrations and installation packages depend on the selected store and embedding model.",
+    "example": "Configure vector_store.as_retriever(search_kwargs={\"k\": 3}) for three candidates. Test the retriever on a known question and inspect the returned page_content and metadata before adding a language model.",
+    "steps": [
+      "Load vectors into store",
+      "Configure retriever",
+      "Inspect results"
+    ],
+    "question": "Why inspect retrieval before testing generation?",
+    "answer": "It helps locate failures in search separately from failures in answering."
+  },
+  {
+    "title": "Two-step versus agentic retrieval",
+    "explanation": "A two-step system retrieves and then generates using a predictable path. An agentic system may choose to search again or call other tools. Give agentic workflows clear limits and measure extra calls against quality.",
+    "example": "At most two retrieval calls and one generation call are allowed. A simple handbook question that works with one retrieval does not benefit from more steps unless the first result lacks evidence.",
+    "steps": [
+      "Choose workflow",
+      "Set call limit",
+      "Evaluate outcome"
+    ],
+    "question": "Which flow is simpler to debug when every question needs one search?",
+    "answer": "Two-step retrieval followed by generation."
+  },
+  {
+    "title": "Retrieval recall at k",
+    "explanation": "Recall at k measures how many of the known relevant passages appear among the first k results. You need a reference set of relevant passages per test question to compute it.",
+    "example": "Three passages are relevant. The top four results contain two of them. Recall@4 = 2 ÷ 3 ≈ 66.7%. Precision@4 = 2 ÷ 4 = 50%.",
+    "steps": [
+      "Label evidence",
+      "Find matches in top k",
+      "Compute recall"
+    ],
+    "question": "If all three relevant passages appear in five results, what is recall@5?",
+    "answer": "100%. Precision@5 is 3 ÷ 5 = 60%."
+  },
+  {
+    "title": "Groundedness and citation quality",
+    "explanation": "Check whether claims are supported by the sources cited. A groundedness metric can count the fraction of verifiable claims with support. It still helps to inspect important errors individually.",
+    "example": "An answer has five factual claims. Four are backed by the cited passages, giving 4 ÷ 5 = 80% supported claims. The unsupported claim may be the one users care about most.",
+    "steps": [
+      "Split factual claims",
+      "Verify citations",
+      "Record failures"
+    ],
+    "question": "Can a wrong page citation make a true claim fail a citation check?",
+    "answer": "Yes. The cited page must support the claim."
+  },
+  {
+    "title": "Evaluate unanswerable questions",
+    "explanation": "Include questions the system should not answer from its data. A safe abstention says that evidence is missing. Tag these cases so you can tell false confidence apart from genuine gaps in coverage.",
+    "example": "Of ten unanswerable questions, the system correctly abstains on seven. Its abstention accuracy on that subset is 70%. Inspect the three guessed answers before releasing.",
+    "steps": [
+      "Create negative cases",
+      "Test abstention",
+      "Inspect guesses"
+    ],
+    "question": "Why keep answerable and unanswerable scores separately?",
+    "answer": "They measure different abilities and failures."
+  },
+  {
+    "title": "Latency and cost budgets",
+    "explanation": "Latency is how long the user waits. Time each stage and count the actual input and output used. A chain of sequential operations adds time, while parallel work can overlap.",
+    "example": "A serial request spends 200 ms retrieving, 300 ms reranking, and 900 ms generating. Total ≈ 1,400 ms. Skipping the reranker would save about 300 ms in this example if everything else stayed fixed.",
+    "steps": [
+      "Measure each step",
+      "Add or compare durations",
+      "Optimise bottleneck"
+    ],
+    "question": "Which stage takes longest here?",
+    "answer": "Generation at 900 ms."
+  },
+  {
+    "title": "Update an index without stale answers",
+    "explanation": "Track each document’s source ID and version. Replace or retire old chunks when the document changes. Test updated facts and verify the old source no longer appears in the default search scope.",
+    "example": "The 2025 handbook says 4 p.m. and 2026 says 5 p.m. Archive the old version or filter to the current edition. A question about today should cite the 2026 source.",
+    "steps": [
+      "Identify changed source",
+      "Reindex current version",
+      "Retest facts"
+    ],
+    "question": "When could you keep the archived chunks searchable?",
+    "answer": "When users explicitly request historical policies and can distinguish the versions."
+  },
+  {
+    "title": "Debug a wrong answer",
+    "explanation": "Trace the answer backward. Was the right source loaded? Did retrieval rank it well? Did the generator copy it accurately? Keep a test for the discovered failure.",
+    "example": "The answer says Monday. The correct Tuesday appears in the retrieved evidence, so focus on the generator’s reading and citation checks. If Tuesday was never retrieved, inspect extraction and ranking first.",
+    "steps": [
+      "Locate correct source",
+      "Inspect retrieval",
+      "Check answer"
+    ],
+    "question": "Which stage would you check first if the PDF’s page is missing from extracted text?",
+    "answer": "Source loading and text extraction."
+  },
+  {
+    "title": "Capstone: A school handbook assistant",
+    "explanation": "Build an assistant over three fictional handbook documents. Index sections with page metadata, return citations, and test questions with missing or conflicting evidence. Make the assistant ask for the edition if needed.",
+    "example": "Prepare 15 checks: 10 answerable, 3 unanswerable, and 2 with conflicting sources. Report accuracy by group as well as overall. Nine correct answerable responses means 90% for that group.",
+    "steps": [
+      "Index handbook",
+      "Answer and cite",
+      "Evaluate by scenario"
+    ],
+    "question": "What makes the final demonstration trustworthy?",
+    "answer": "Show a supported answer, a correct abstention, and a case where conflicting evidence is reported."
+  }
+]

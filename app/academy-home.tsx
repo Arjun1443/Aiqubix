@@ -48,6 +48,7 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import type { Course } from "@/lib/course-catalogue";
+import { courseLessonPath } from "@/lib/course-paths";
 
 type Tool = { title: string; text: string; icon: LucideIcon };
 const studentTools: Tool[] = [
@@ -487,9 +488,15 @@ export default function AcademyHome({ courses }: { courses: Course[] }) {
                   </CardHeader>
                   <CardContent className="px-5 pb-5 pt-5">
                     <div className="flex items-center justify-between text-xs text-slate-400"><span className="flex items-center gap-1.5"><Clock3 aria-hidden="true" className="h-3.5 w-3.5" />{course.duration}</span><span>{course.lessons} lessons</span></div>
-                    <Button type="button" variant="ghost" size="sm" onClick={() => open(course.title)} className="mt-5 w-full border border-white/10 bg-white/[0.03] text-slate-100 hover:border-cyan-200/40 hover:bg-cyan-200/10 hover:text-white">
-                      View course <ArrowRight aria-hidden="true" />
-                    </Button>
+                    {courseLessonPath(course.title) ? (
+                      <Button asChild variant="ghost" size="sm" className="mt-5 w-full border border-white/10 bg-white/[0.03] text-slate-100 hover:border-cyan-200/40 hover:bg-cyan-200/10 hover:text-white">
+                        <Link href={courseLessonPath(course.title)!}>View course <ArrowRight aria-hidden="true" /></Link>
+                      </Button>
+                    ) : (
+                      <Button type="button" variant="ghost" size="sm" onClick={() => open(course.title)} className="mt-5 w-full border border-white/10 bg-white/[0.03] text-slate-100 hover:border-cyan-200/40 hover:bg-cyan-200/10 hover:text-white">
+                        View course <ArrowRight aria-hidden="true" />
+                      </Button>
+                    )}
                   </CardContent>
                 </Card>
               ))}
