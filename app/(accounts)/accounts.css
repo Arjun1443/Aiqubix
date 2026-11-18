@@ -124,3 +124,10 @@
 @media (max-width: 28rem) {
   .trainer-batch-switcher { grid-template-columns: 1fr; }
 }
+.trainer-intake-choices { width: 100%; min-width: 0; display: grid; gap: .7rem; }
+.trainer-intake-choices legend { margin-bottom: .5rem; font-weight: 700; }
+.trainer-intake-check { display: flex; align-items: baseline; gap: .55rem; font-weight: 700; overflow-wrap: anywhere; }
+.trainer-intake-check input { accent-color: var(--academy-navy); flex-shrink: 0; }
+.trainer-intake-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr)); gap: .6rem; overflow-wrap: anywhere; }
+.trainer-intake-details dt { font-size: .8rem; font-weight: 700; }
+.trainer-intake-details dd { font-size: .88rem; white-space: pre-wrap; }

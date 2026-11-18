@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import type { FormResult } from "../../actions";
 import { accounts, requireAccount, tokenHash } from "@/lib/academy-accounts";
 import { getCourses } from "@/lib/academy-courses";
+import { insertCodedBatch } from "@/lib/trainer-intake";
 import { activities, trainerBatches, trainerRecords, type ActivityKind, type ActivityField } from "@/lib/trainer-workspace";
 
 const route = "/dashboard/trainer";
@@ -22,12 +23,13 @@ export async function createBatch(_: FormResult, form: FormData): Promise<FormRe
   if (!name || name.length > 100) return { message: "Enter a batch name of up to 100 characters." };
   try {
     if (!(await getCourses()).some((item) => item.title === course)) return { message: "Select a course in the catalogue." };
-    await trainerBatches().insertOne({ _id: randomUUID(), trainer: trainer._id, name, course, students: [] });
+    const code = await insertCodedBatch({ trainer: trainer._id, name, course, students: [] });
+    if (!code) return { message: "All three-character batch codes are in use." };
+    revalidatePath(route);
+    return { message: `Batch created. Code: ${code}` };
   } catch {
     return unavailable;
   }
-  revalidatePath(route);
-  return { message: "Batch created. Select it from the batch list to manage it." };
 }
 
 export async function addLearner(_: FormResult, form: FormData): Promise<FormResult> {
