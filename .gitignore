@@ -44,6 +44,3 @@ next-env.d.ts
 /.codex/
 /outputs/
 /work/
-
-# Python bytecode
-__pycache__/
