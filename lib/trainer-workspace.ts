@@ -5,7 +5,8 @@ export const sections = [
   ["delivery", "Training Delivery"], ["assessment", "Assessment"], ["batches", "Batch Details"],
   ["attendance", "Attendance"], ["reports", "Report"], ["fellowship", "Fellowship SDP Report"],
   ["capstone", "Capstone Project Teams"], ["forms", "Form Builder"], ["queries", "View All Queries"],
-  ["profile", "My Profile"],
+  ["work-attendance", "Work Attendance"], ["work-leave", "My Leave"],
+  ["work-appraisals", "My Appraisals"], ["profile", "My Profile"],
 ] as const;
 
 export type ActivityField = {
