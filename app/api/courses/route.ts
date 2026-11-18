@@ -1,5 +1,7 @@
+import { hasAcademyApi, requestAcademyApi } from "@/lib/academy-api";
 import { courses } from "@/lib/course-catalogue";
 
 export function GET() {
-  return Response.json({ courses });
+  if (!hasAcademyApi()) return Response.json({ courses });
+  return requestAcademyApi("/courses");
 }

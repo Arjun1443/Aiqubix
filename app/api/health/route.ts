@@ -1,3 +1,5 @@
+import { requestAcademyApi } from "@/lib/academy-api";
+
 export function GET() {
-  return Response.json({ status: "ok" });
+  return requestAcademyApi("/health");
 }
